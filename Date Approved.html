@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Date Approved™ — A&F Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Helvetica+Neue:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #FAFAF8; color: #1A1A18; -webkit-font-smoothing: antialiased; }
+  :root {
+    --bg: #FAFAF8;
+    --fg: #1A1A18;
+    --mid: #6B6B66;
+    --light: #E8E8E3;
+    --tag-business: #1B2A4A;
+    --tag-datenight: #6B2737;
+    --tag-tailgate: #C4541A;
+    --tag-everyday: #8C7B6B;
+  }
+  .serif { font-family: 'EB Garamond', Georgia, serif; }
+</style>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 80 56" xmlns="http://www.w3.org/2000/svg">
+    <rect width="80" height="56" fill="#1A1A18"/>
+    <text x="40" y="34" text-anchor="middle" font-size="14" fill="#FAFAF8" font-family="Georgia, serif" font-style="italic">A&amp;F</text>
+  </svg>
+</template>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+const { useState, useEffect, useRef } = React;
+
+// ─── Photos ─────────────────────────────────────────────────────
+const PHOTOS = {
+  // Product gallery — women's tank/top model shots
+  product: [
+  'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&h=1200&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&h=1200&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=900&h=1200&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=900&h=1200&fit=crop&auto=format&q=80'],
+
+  // Full-bleed hero per occasion
+  occasionHero: {
+    datenight: 'uploads/AdobeStock_127154936.jpeg', // candlelit restaurant
+    business: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1600&h=600&fit=crop&auto=format&q=80', // professional woman
+    tailgate: 'uploads/AdobeStock_120522558.jpeg', // stadium crowd gameday
+    everyday: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&h=600&fit=crop&auto=format&q=80' // casual street style
+  },
+  // Occasion tile cards on the grid page
+  occasionTile: {
+    datenight: 'uploads/AdobeStock_127154936.jpeg', // candlelit restaurant
+    business: 'uploads/IKwRuMgmtZL5UwYlH4yqrAYpmeemf4iU8PIMVfkziMuGqLdj_ZkyR2rGlccWoByP70fZIs6.7P3yIIgqMkpLvzWaa_kle.RnXprqufC4.Kuv5.nnITaHroJ0shLpuGexe_PZD87yx.webp', // professional woman
+    tailgate: 'uploads/AdobeStock_1511541495.jpeg', // sorority girls / greek life
+    everyday: 'uploads/AdobeStock_120522558.jpeg' // tailgate truck party
+  },
+  // Product cards — occasion-specific styling context
+  cards: {
+    datenight: [
+    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&h=660&fit=crop&auto=format&q=75'],
+
+    business: [
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=500&h=660&fit=crop&auto=format&q=75'],
+
+    tailgate: [
+    'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=500&h=660&fit=crop&auto=format&q=75'],
+
+    everyday: [
+    'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&h=660&fit=crop&auto=format&q=75',
+    'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=500&h=660&fit=crop&auto=format&q=75']
+
+  },
+  // UGC masonry — occasion-specific community photos
+  ugc: {
+    datenight: [
+    'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&auto=format&q=70'],
+
+    business: [
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1515169067868-5387ec356754?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=400&auto=format&q=70'],
+
+    tailgate: [
+    'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&auto=format&q=70'],
+
+    everyday: [
+    'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&auto=format&q=70',
+    'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&auto=format&q=70']
+
+  },
+  teaser: [
+  'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=300&h=400&fit=crop&auto=format&q=70',
+  'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=300&h=400&fit=crop&auto=format&q=70',
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&h=400&fit=crop&auto=format&q=70']
+
+};
+
+// ─── Design tokens ──────────────────────────────────────────────
+const TAGS = {
+  business: { label: 'Interview', color: '#1B2770', icon: '♦' },
+  datenight: { label: 'Evening Out', color: '#6B2737', icon: '♦' },
+  tailgate: { label: 'Greek Life', color: '#4DC3F5', icon: '✳' },
+  everyday: { label: 'Tailgate', color: '#D93B1A', icon: '▼' }
+};
+
+const OCCASIONS = [
+{ id: 'datenight', label: 'Evening Out', sub: 'Pieces that feel intentional without trying too hard.', color: '#6B2737', tagline: 'For when it matters.' },
+{ id: 'tailgate', label: 'Greek Life', sub: 'Brotherhood, sisterhood, and outfits that hold up all night.', color: '#4DC3F5', tagline: 'Chapter-approved.' },
+{ id: 'everyday', label: 'Tailgate', sub: 'Show up loud. Look effortlessly good.', color: '#D93B1A', tagline: 'Game day ready.' },
+{ id: 'business', label: 'Interview', sub: 'First impressions that get you to round two.', color: '#1B2770', tagline: 'Look the part.' }];
+
+
+// ─── Tag Badge ──────────────────────────────────────────────────
+function TagBadge({ tagKey, onClick, size = 'md' }) {
+  const tag = TAGS[tagKey];
+  const [hov, setHov] = useState(false);
+  const pad = size === 'sm' ? '3px 8px' : '5px 12px';
+  const fs = size === 'sm' ? 10 : 11;
+  return (
+    <span
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        background: tag.color,
+        color: '#fff',
+        border: `1.5px solid ${tag.color}`,
+        opacity: hov ? 0.85 : 1,
+        borderRadius: 20, padding: pad, fontSize: fs,
+        fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: 'all 0.2s ease', userSelect: 'none',
+        whiteSpace: 'nowrap',
+        boxShadow: hov ? `0 2px 8px ${tag.color}40` : `0 1px 4px ${tag.color}20`,
+      }}>
+      
+      <span style={{ fontSize: fs - 1 }}>{tag.icon}</span>
+      {tag.label}
+    </span>);
+
+}
+
+// ─── Nav ─────────────────────────────────────────────────────────
+function Nav({ onNavigate, currentView }) {
+  return (
+    <nav style={{
+      position: 'sticky', top: 0, zIndex: 100,
+      background: 'rgba(250,250,248,0.95)', backdropFilter: 'blur(8px)',
+      borderBottom: '1px solid #E8E8E3'
+    }}>
+      {/* Top bar */}
+      <div style={{ borderBottom: '1px solid #f0f0ec', padding: '6px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: 11, letterSpacing: '0.08em', color: '#6B6B66' }}>FREE SHIPPING ON ORDERS $99+</span>
+        <div style={{ display: 'flex', gap: 20 }}>
+          {['Sign In', 'My Account'].map((l) =>
+          <span key={l} style={{ fontSize: 11, letterSpacing: '0.06em', color: '#6B6B66', cursor: 'pointer' }}>{l}</span>
+          )}
+        </div>
+      </div>
+      {/* Main nav */}
+      <div style={{ padding: '0 40px', display: 'flex', alignItems: 'center', height: 64 }}>
+        {/* Logo */}
+        <div style={{ flex: 1 }}>
+          <span className="serif" style={{ fontSize: 22, fontWeight: 500, letterSpacing: '0.04em', cursor: 'pointer' }}
+          onClick={() => onNavigate('product')}>
+            Abercrombie & Fitch
+          </span>
+        </div>
+        {/* Links */}
+        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+          {['New Arrivals', 'Women', 'Men', 'Denim', 'Sale'].map((l) =>
+          <span key={l} style={{ fontSize: 12, letterSpacing: '0.07em', textTransform: 'uppercase', cursor: 'pointer', color: '#1A1A18' }}>{l}</span>
+          )}
+          <span
+            onClick={() => onNavigate('occasions')}
+            style={{
+              fontSize: 12, letterSpacing: '0.07em', textTransform: 'uppercase', cursor: 'pointer',
+              color: currentView === 'occasions' || currentView.startsWith('occasion-') ? '#6B2737' : '#1A1A18',
+              fontWeight: currentView === 'occasions' || currentView.startsWith('occasion-') ? 500 : 400,
+              borderBottom: currentView === 'occasions' || currentView.startsWith('occasion-') ? '1px solid #6B2737' : 'none',
+              paddingBottom: 2
+            }}>
+            
+            Date Approved™
+          </span>
+        </div>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 16, alignItems: 'center' }}>
+          <span style={{ fontSize: 11, letterSpacing: '0.06em', color: '#6B6B66', cursor: 'pointer' }}>🔍</span>
+          <span style={{ fontSize: 11, letterSpacing: '0.06em', color: '#6B6B66', cursor: 'pointer' }}>♡</span>
+          <span style={{ fontSize: 11, letterSpacing: '0.06em', color: '#6B6B66', cursor: 'pointer' }}>⊠</span>
+        </div>
+      </div>
+    </nav>);
+
+}
+
+// ─── Image Placeholder ──────────────────────────────────────────
+function ImgPlaceholder({ label, w, h, bg = '#E8E4DE', style = {} }) {
+  return (
+    <div style={{
+      width: w, height: h, background: bg,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexDirection: 'column', gap: 6, flexShrink: 0,
+      ...style
+    }}>
+      <div style={{
+        width: '60%', height: '60%', opacity: 0.15,
+        backgroundImage: 'repeating-linear-gradient(45deg, #888 0, #888 1px, transparent 0, transparent 50%)',
+        backgroundSize: '8px 8px'
+      }} />
+      <span style={{ fontSize: 10, color: '#999', letterSpacing: '0.06em', textTransform: 'uppercase', position: 'absolute' }}>{label}</span>
+    </div>);
+
+}
+
+// ─── Product Page ───────────────────────────────────────────────
+function ProductPage({ onNavigate }) {
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [mainImg, setMainImg] = useState(0);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [hovTag, setHovTag] = useState(null);
+
+  const colors = [
+  { name: 'Soft White', hex: '#F5F2EE' },
+  { name: 'Heather Oat', hex: '#D4C4A8' },
+  { name: 'Washed Black', hex: '#2C2C2A' },
+  { name: 'Dusty Rose', hex: '#C4978A' }];
+
+  const sizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+  const imgBgs = ['#E8E4DE', '#DDD8D0', '#E2DDD6', '#ECEAE5'];
+
+  const handleAddToCart = () => {
+    if (!selectedSize) return;
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
+
+  const productTags = ['everyday', 'datenight'];
+
+  return (
+    <div>
+      {/* Breadcrumb */}
+      <div style={{ padding: '14px 40px', borderBottom: '1px solid #EEEEE9', display: 'flex', gap: 8, alignItems: 'center' }}>
+        {['Home', 'Women', 'Tops', 'Tanks'].map((b, i, arr) =>
+        <React.Fragment key={b}>
+            <span style={{ fontSize: 11, color: '#9B9B96', letterSpacing: '0.05em', cursor: 'pointer' }}>{b}</span>
+            {i < arr.length - 1 && <span style={{ fontSize: 11, color: '#C8C8C3' }}>/</span>}
+          </React.Fragment>
+        )}
+      </div>
+
+      <div style={{ display: 'flex', gap: 0, maxWidth: 1280, margin: '0 auto', padding: '0 40px 80px' }}>
+        {/* Left — image gallery */}
+        <div style={{ flex: '0 0 60%', paddingTop: 32 }}>
+          <div style={{ display: 'flex', gap: 10 }}>
+            {/* Thumbs */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {PHOTOS.product.map((src, i) =>
+              <div key={i} onClick={() => setMainImg(i)}
+              style={{
+                width: 64, height: 80, cursor: 'pointer',
+                border: mainImg === i ? '2px solid #1A1A18' : '2px solid transparent',
+                transition: 'border 0.2s',
+                overflow: 'hidden', flexShrink: 0
+              }}>
+                  <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                </div>
+              )}
+            </div>
+            {/* Main image */}
+            <div style={{ flex: 1, position: 'relative' }}>
+              <div style={{ width: '100%', aspectRatio: '2/3', position: 'relative', overflow: 'hidden' }}>
+                <img src={PHOTOS.product[mainImg]} alt="Bra-Free Rib Scoopneck Tank"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'opacity 0.3s' }} />
+                {/* Sale badge */}
+                <div style={{
+                  position: 'absolute', top: 16, left: 16,
+                  background: '#C4541A', color: '#fff',
+                  fontSize: 10, fontWeight: 600, letterSpacing: '0.08em',
+                  padding: '3px 8px', borderRadius: 2
+                }}>SALE</div>
+              </div>
+              {/* Nav arrows */}
+              {[['◂', -1], ['▸', 1]].map(([arrow, dir]) =>
+              <button key={arrow} onClick={() => setMainImg((m) => (m + dir + 4) % 4)}
+              style={{
+                position: 'absolute', top: '50%', [dir < 0 ? 'left' : 'right']: 12,
+                transform: 'translateY(-50%)',
+                background: 'rgba(250,250,248,0.9)', border: '1px solid #E8E8E3',
+                width: 36, height: 36, borderRadius: '50%', cursor: 'pointer',
+                fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}>{arrow}</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right — product details */}
+        <div style={{ flex: '0 0 40%', paddingTop: 32, paddingLeft: 48 }}>
+          {/* Brand + category */}
+          <p style={{ fontSize: 11, color: '#9B9B96', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 10 }}>
+            Abercrombie & Fitch — Women's Tops
+          </p>
+
+          {/* Product name */}
+          <h1 className="serif" style={{ fontSize: 32, fontWeight: 400, lineHeight: 1.2, marginBottom: 10, letterSpacing: '-0.01em' }}>
+            Bra-Free Rib<br />Scoopneck Tank
+          </h1>
+
+          {/* Price */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+            <span style={{ fontSize: 20, fontWeight: 500, color: '#C4541A' }}>$29.00</span>
+            <span style={{ fontSize: 16, color: '#AAA', textDecoration: 'line-through' }}>$45.00</span>
+            <span style={{ fontSize: 11, color: '#C4541A', letterSpacing: '0.06em', fontWeight: 500 }}>36% OFF</span>
+          </div>
+
+          {/* ── DATE APPROVED™ TAGS — THE KEY ADDITION ── */}
+          <div style={{
+            background: '#FAFAF8',
+            border: '1px solid #E8E8E3',
+            borderRadius: 8,
+            padding: '14px 16px',
+            marginBottom: 24
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6B6B66' }}>
+                Date Approved™ for:
+              </span>
+              <span style={{ fontSize: 10, color: '#AEAEAA', letterSpacing: '0.04em' }}>Tap to explore the look</span>
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {productTags.map((tag) =>
+              <TagBadge
+                key={tag}
+                tagKey={tag}
+                onClick={() => onNavigate(`occasion-${tag}`)} />
+
+              )}
+            </div>
+          </div>
+
+          {/* Rating */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
+            <span style={{ color: '#C4541A', letterSpacing: 2 }}>★★★★☆</span>
+            <span style={{ fontSize: 12, color: '#6B6B66' }}>4.2 (1,847 reviews)</span>
+          </div>
+
+          {/* Color selector */}
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Color</span>
+              <span style={{ fontSize: 12, color: '#6B6B66' }}>{colors[selectedColor].name}</span>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {colors.map((c, i) =>
+              <button key={i} onClick={() => setSelectedColor(i)}
+              style={{
+                width: 28, height: 28, borderRadius: '50%', background: c.hex,
+                border: selectedColor === i ? '2px solid #1A1A18' : '2px solid #E8E8E3',
+                outline: selectedColor === i ? '2px solid transparent' : 'none',
+                boxShadow: selectedColor === i ? '0 0 0 3px #FAFAF8, 0 0 0 5px #1A1A18' : 'none',
+                cursor: 'pointer', transition: 'all 0.15s'
+              }} />
+              )}
+            </div>
+          </div>
+
+          {/* Size selector */}
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+              <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Size</span>
+              <span style={{ fontSize: 12, color: '#9B9B96', cursor: 'pointer', textDecoration: 'underline' }}>Size Guide</span>
+            </div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {sizes.map((s) =>
+              <button key={s} onClick={() => setSelectedSize(s)}
+              style={{
+                width: 46, height: 40, border: selectedSize === s ? '1.5px solid #1A1A18' : '1px solid #E8E8E3',
+                background: selectedSize === s ? '#1A1A18' : 'transparent',
+                color: selectedSize === s ? '#fff' : '#1A1A18',
+                fontSize: 12, fontWeight: 500, letterSpacing: '0.04em',
+                cursor: 'pointer', borderRadius: 4, transition: 'all 0.15s'
+              }}>{s}</button>
+              )}
+            </div>
+          </div>
+
+          {/* Add to cart */}
+          <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
+            <button onClick={handleAddToCart}
+            style={{
+              flex: 1, height: 52, background: addedToCart ? '#2D6A4F' : '#1A1A18',
+              color: '#fff', border: 'none', cursor: selectedSize ? 'pointer' : 'not-allowed',
+              fontSize: 12, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase',
+              borderRadius: 4, transition: 'background 0.3s', opacity: selectedSize ? 1 : 0.5
+            }}>
+              {addedToCart ? '✓ Added to Bag' : !selectedSize ? 'Select a Size' : 'Add to Bag'}
+            </button>
+            <button style={{
+              width: 52, height: 52, border: '1px solid #E8E8E3', background: 'transparent',
+              cursor: 'pointer', borderRadius: 4, fontSize: 18, color: '#1A1A18'
+            }}>♡</button>
+          </div>
+
+          {/* Affirm */}
+          <p style={{ fontSize: 12, color: '#9B9B96', textAlign: 'center', marginBottom: 28 }}>
+            or 4 interest-free installments of <strong>$7.25</strong> with <span style={{ fontWeight: 600, color: '#1A1A18' }}>Klarna</span>
+          </p>
+
+          {/* Accordion */}
+          {[
+          { title: 'Description', content: 'The Bra-Free Rib Scoopneck Tank features built-in support for an all-day style. Crafted from a soft, ribbed fabric that moves with you. Scoop neckline, relaxed fit, cropped length.' },
+          { title: 'Fit & Fabric', content: 'Model is 5\'9" wearing size Small. 95% Cotton, 5% Elastane. Machine wash cold.' },
+          { title: 'Shipping & Returns', content: 'Free standard shipping on orders $99+. Free returns within 60 days.' }].
+          map(({ title, content }) =>
+          <AccordionRow key={title} title={title} content={content} />
+          )}
+
+          {/* See how others styled teaser */}
+          <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid #E8E8E3' }}>
+            <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14, color: '#6B6B66' }}>
+              See how others styled this →
+            </p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {PHOTOS.teaser.map((src, i) =>
+              <div key={i}
+              onClick={() => onNavigate('occasion-datenight')}
+              style={{
+                flex: 1, aspectRatio: '3/4', cursor: 'pointer',
+                position: 'relative', overflow: 'hidden', borderRadius: 4
+              }}>
+                  <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0,
+                  background: 'linear-gradient(transparent, rgba(0,0,0,0.45))',
+                  padding: '20px 6px 6px'
+                }} />
+                </div>
+              )}
+            </div>
+            <button onClick={() => onNavigate('occasion-datenight')}
+            style={{
+              width: '100%', marginTop: 10, padding: '10px', background: 'transparent',
+              border: '1px solid #E8E8E3', cursor: 'pointer', fontSize: 11,
+              letterSpacing: '0.08em', textTransform: 'uppercase', color: '#6B6B66',
+              borderRadius: 4
+            }}>
+              View Date Night looks →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function AccordionRow({ title, content }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ borderTop: '1px solid #E8E8E3' }}>
+      <button onClick={() => setOpen((o) => !o)}
+      style={{
+        width: '100%', padding: '14px 0', display: 'flex', justifyContent: 'space-between',
+        background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left'
+      }}>
+        <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.07em', textTransform: 'uppercase' }}>{title}</span>
+        <span style={{ fontSize: 16, color: '#9B9B96', transform: open ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s' }}>+</span>
+      </button>
+      {open && <p style={{ fontSize: 13, color: '#6B6B66', lineHeight: 1.7, paddingBottom: 16 }}>{content}</p>}
+    </div>);
+
+}
+
+// ─── Occasions Grid ─────────────────────────────────────────────
+function OccasionsGrid({ onNavigate }) {
+  const [hovFeat, setHovFeat] = useState(null);
+
+  const stats = [
+  { num: '4.2M', label: 'outfit saves this semester' },
+  { num: '87%', label: 'said they felt more confident' },
+  { num: '12K+', label: 'community looks submitted' },
+  { num: '140+', label: 'pieces, curated per occasion' }];
+
+
+  const featuredLooks = [
+  { occasion: 'datenight', label: 'Evening Out', caption: 'The satin cami + wide-leg trouser combo that broke our saves record.', img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=800&fit=crop&auto=format&q=80', color: '#6B2737' },
+  { occasion: 'business', label: 'Interview', caption: 'A blazer that works from 9am lecture to your first big internship interview.', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&h=800&fit=crop&auto=format&q=80', color: '#1B2770' },
+  { occasion: 'everyday', label: 'Tailgate', caption: 'Layer up. Rep smart. Stay comfortable for 6 hours straight.', img: 'uploads/AdobeStock_120522558.jpeg', color: '#D93B1A' }];
+
+
+  return (
+    <div>
+      {/* Hero banner */}
+      <div style={{ background: '#1A1A18', padding: '80px 40px 72px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute', inset: 0, opacity: 0.06,
+          backgroundImage: 'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)',
+          backgroundSize: '14px 14px'
+        }} />
+        <p style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#6B6B66', marginBottom: 16, position: 'relative' }}>A&F Presents</p>
+        <h1 className="serif" style={{ fontSize: 72, fontWeight: 400, color: '#FAFAF8', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: 24, position: 'relative' }}>
+          Date<br /><em>Approved™</em>
+        </h1>
+        <p style={{ fontSize: 16, color: '#9B9B96', maxWidth: 520, margin: '0 auto 40px', lineHeight: 1.7, position: 'relative' }}>
+          Stop wondering what to wear. We curated outfits for every occasion you actually face — from game day to your first big internship.
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 12, position: 'relative' }}>
+          {OCCASIONS.map((o) =>
+          <button key={o.id} onClick={() => onNavigate(`occasion-${o.id}`)}
+          style={{
+            padding: '10px 20px', background: 'transparent',
+            border: `1px solid ${o.color}60`, color: '#FAFAF8',
+            fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase',
+            cursor: 'pointer', borderRadius: 3, transition: 'all 0.2s'
+          }}
+          onMouseEnter={(e) => {e.target.style.background = o.color;e.target.style.borderColor = o.color;}}
+          onMouseLeave={(e) => {e.target.style.background = 'transparent';e.target.style.borderColor = `${o.color}60`;}}>
+            {o.label}</button>
+          )}
+        </div>
+      </div>
+
+      {/* Stats strip */}
+      <div style={{ background: '#F5F4F0', borderBottom: '1px solid #E8E8E3' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: '#E8E8E3' }}>
+          {stats.map((s) =>
+          <div key={s.num} style={{ background: '#F5F4F0', padding: '28px 32px', textAlign: 'center' }}>
+              <p className="serif" style={{ fontSize: 36, fontWeight: 400, marginBottom: 4 }}>{s.num}</p>
+              <p style={{ fontSize: 12, color: '#9B9B96', letterSpacing: '0.04em' }}>{s.label}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Occasion tiles */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '56px 40px 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+          <div>
+            <p style={{ fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9B9B96', marginBottom: 8 }}>Browse by occasion</p>
+            <h2 className="serif" style={{ fontSize: 36, fontWeight: 400 }}>Where are you headed?</h2>
+          </div>
+          <p style={{ fontSize: 13, color: '#9B9B96', maxWidth: 300, textAlign: 'right', lineHeight: 1.6 }}>
+            Each page has curated pieces, real styling advice, and community photos.
+          </p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 80 }}>
+          {OCCASIONS.map((occ) =>
+          <OccasionTile key={occ.id} occ={occ} onNavigate={onNavigate} />
+          )}
+        </div>
+      </div>
+
+      {/* Featured looks editorial */}
+      <div style={{ background: '#FAFAF8', borderTop: '1px solid #E8E8E3', borderBottom: '1px solid #E8E8E3' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '64px 40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40 }}>
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9B9B96', marginBottom: 8 }}>This week's picks</p>
+              <h2 className="serif" style={{ fontSize: 36, fontWeight: 400 }}>Featured looks</h2>
+            </div>
+            <span style={{ fontSize: 12, color: '#9B9B96' }}>Updated weekly</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+            {featuredLooks.map((look, i) =>
+            <div key={i}
+            onMouseEnter={() => setHovFeat(i)}
+            onMouseLeave={() => setHovFeat(null)}
+            onClick={() => onNavigate(`occasion-${look.occasion}`)}
+            style={{ cursor: 'pointer' }}>
+                <div style={{ aspectRatio: '3/4', overflow: 'hidden', marginBottom: 16, position: 'relative' }}>
+                  <img src={look.img} alt={look.label} style={{
+                  width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+                  transform: hovFeat === i ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.45s ease'
+                }} />
+                  <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0,
+                  background: 'linear-gradient(transparent, rgba(0,0,0,0.5))',
+                  padding: '40px 16px 16px'
+                }}>
+                    <span style={{
+                    display: 'inline-block', background: look.color, color: '#fff',
+                    fontSize: 9, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
+                    padding: '3px 10px', borderRadius: 20
+                  }}>{look.label}</span>
+                  </div>
+                </div>
+                <p style={{ fontSize: 14, lineHeight: 1.6, color: '#4A4A46', marginBottom: 8 }}>{look.caption}</p>
+                <span style={{ fontSize: 11, color: look.color, letterSpacing: '0.07em', textTransform: 'uppercase', fontWeight: 500 }}>
+                  Shop the look →
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* How it works */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '64px 40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <p style={{ fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9B9B96', marginBottom: 8 }}>How it works</p>
+          <h2 className="serif" style={{ fontSize: 36, fontWeight: 400 }}>Shop smarter, not harder</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E8E8E3' }}>
+          {[
+          { step: '01', icon: '◎', title: 'Pick your occasion', body: 'Date night, tailgate, internship, or just Tuesday — we have a curated edit for it. Each occasion page is a full shopping destination.' },
+          { step: '02', icon: '◈', title: 'Read the styling notes', body: 'Real advice written by people who dress for the same situations you do. No vague "dress to impress" nonsense — actual, specific tips.' },
+          { step: '03', icon: '◇', title: 'Tag your look', body: 'Bought something? Style it, shoot it, tag @abercrombie with #DateApproved. The best submissions get featured in the community gallery.' }].
+          map((s) =>
+          <div key={s.step} style={{ background: '#FAFAF8', padding: '40px 40px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+                <span className="serif" style={{ fontSize: 13, color: '#C8C8C3', fontWeight: 400 }}>{s.step}</span>
+                <span style={{ fontSize: 20, color: '#9B9B96' }}>{s.icon}</span>
+              </div>
+              <h3 className="serif" style={{ fontSize: 24, fontWeight: 400, marginBottom: 12 }}>{s.title}</h3>
+              <p style={{ fontSize: 14, color: '#6B6B66', lineHeight: 1.7 }}>{s.body}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div style={{ background: '#1A1A18', padding: '64px 40px', textAlign: 'center' }}>
+        <p className="serif" style={{ fontSize: 48, fontWeight: 400, color: '#FAFAF8', marginBottom: 16, letterSpacing: '-0.02em' }}>
+          Find your look.
+        </p>
+        <p style={{ fontSize: 15, color: '#6B6B66', marginBottom: 32, lineHeight: 1.7 }}>
+          Every occasion. Every season. Always on sale somewhere.
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
+          <button onClick={() => onNavigate('product')}
+          style={{
+            padding: '14px 32px', background: '#FAFAF8', color: '#1A1A18',
+            border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 500,
+            letterSpacing: '0.08em', textTransform: 'uppercase', borderRadius: 4
+          }}>Shop New Arrivals</button>
+          <button onClick={() => onNavigate('occasion-datenight')}
+          style={{
+            padding: '14px 32px', background: 'transparent', color: '#FAFAF8',
+            border: '1px solid #6B6B66', cursor: 'pointer', fontSize: 12, fontWeight: 500,
+            letterSpacing: '0.08em', textTransform: 'uppercase', borderRadius: 4
+          }}>Explore Date Night</button>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function OccasionTile({ occ, onNavigate }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <div
+      onClick={() => onNavigate(`occasion-${occ.id}`)}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{ cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+      {/* Image area */}
+      <div style={{ aspectRatio: '3/4', background: `${occ.color}18`, position: 'relative', overflow: 'hidden' }}>
+        <img src={PHOTOS.occasionTile[occ.id]} alt={occ.label}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+          transform: hov ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.5s ease' }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: hov ? `linear-gradient(180deg, transparent 40%, ${occ.color}CC)` : `linear-gradient(180deg, transparent 50%, ${occ.color}88)`,
+          transition: 'background 0.4s'
+        }} />
+        <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+          <div style={{
+            display: 'inline-block',
+            background: occ.color, color: '#fff',
+            fontSize: 9, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
+            padding: '4px 10px', borderRadius: 20, marginBottom: 8
+          }}>{occ.tagline}</div>
+          <h3 className="serif" style={{ fontSize: 22, fontWeight: 400, color: '#fff', lineHeight: 1.1 }}>{occ.label}</h3>
+        </div>
+        {/* Corner arrow on hover */}
+        <div style={{
+          position: 'absolute', top: 12, right: 12,
+          opacity: hov ? 1 : 0, transition: 'opacity 0.2s',
+          background: 'rgba(250,250,248,0.9)', borderRadius: '50%',
+          width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 12
+        }}>→</div>
+      </div>
+    </div>);
+
+}
+
+// ─── Occasion Page ───────────────────────────────────────────────
+function OccasionPage({ occasionId, onNavigate }) {
+  const occ = OCCASIONS.find((o) => o.id === occasionId) || OCCASIONS[0];
+  const [genderFilter, setGenderFilter] = useState('All');
+  const [hovPhoto, setHovPhoto] = useState(null);
+
+  const stylingTips = {
+    datenight: [
+    { tip: 'Opt for a fitted silhouette', sub: 'Structure signals intention.' },
+    { tip: 'Earth tones over black this season', sub: 'Warm hues photograph better.' },
+    { tip: 'One statement piece, keep the rest simple', sub: 'Let it breathe.' }],
+
+    business: [
+    { tip: 'Dress one level above the role', sub: 'If the office is business casual, you are business.' },
+    { tip: 'Neutral palette, sharp fit', sub: 'Confidence in restraint.' },
+    { tip: 'Clean sneakers or loafers only', sub: 'Feet finish the look.' }],
+
+    tailgate: [
+    { tip: 'Dress for the chapter, not the afterparty', sub: 'Elevated basics over costume-level matching.' },
+    { tip: 'Layer with intention', sub: 'A well-chosen hoodie or overshirt pulls the whole look together.' },
+    { tip: 'Your colors, your rules', sub: 'Rep the house without going head-to-toe.' }],
+
+    everyday: [
+    { tip: 'Layer up — always', sub: 'Morning kickoff is cold. Afternoon is not. Dress for both.' },
+    { tip: 'School colors, but make it fashion', sub: 'One team-color piece max. Let the rest of the outfit do the work.' },
+    { tip: 'Comfortable footwear is non-negotiable', sub: 'You\'re standing for 6+ hours on grass. Plan accordingly.' }]
+
+  };
+
+  const tailgateExtra = occasionId === 'everyday' ? {
+    intro: `Tailgating is a sport in itself. You're outside for hours, the weather can't make up its mind, and somehow you need to look good in every photo. The trick isn't trying harder — it's dressing smarter.`,
+    rules: [
+    { num: '01', title: 'The layering rule', body: 'Start with a fitted base — a ribbed tank or a slim tee. Add a fleece or hoodie mid-layer. Finish with an overshirt or light jacket you can tie around your waist when things heat up. Three layers, infinite combinations.' },
+    { num: '02', title: 'Rep your team the right way', body: 'Full head-to-toe merch is for the stands. At the tailgate, one team-color piece — a hat, a jacket, a scarf — is enough. Pair it with clean neutrals and you look intentional, not costumed.' },
+    { num: '03', title: 'The footwear reality check', body: 'Stadium lots and grass fields are unforgiving. White sneakers will not survive. Opt for chunky sneakers, lug-sole boots, or broken-in loafers. If you wouldn\'t walk a mile in them, leave them home.' },
+    { num: '04', title: 'Bag game matters', body: 'Most stadiums have clear bag policies. Plan your outfit around a small crossbody or belt bag — it keeps your hands free and your look put-together, not loaded down.' }]
+
+  } : null;
+
+  const products = [
+  { name: 'Bra-Free Rib Scoopneck Tank', price: 29, was: 45, tag: occasionId },
+  { name: 'High Rise Dad Jean', price: 79, was: null, tag: occasionId },
+  { name: 'Relaxed Linen Shirt', price: 55, was: 70, tag: occasionId },
+  { name: 'Slim Chino Trouser', price: 69, was: null, tag: occasionId },
+  { name: 'Crinkle Satin Cami', price: 42, was: 60, tag: occasionId },
+  { name: 'Lightweight Cardigan', price: 65, was: null, tag: occasionId }];
+
+
+  const tips = stylingTips[occasionId] || stylingTips.datenight;
+
+  const masonryBgs = [
+  '#DDD8D0', '#E2DDD6', '#ECEAE5', '#D8D0C8', '#E8E4DE', '#D4CEBE',
+  '#E0DCD4', '#DCD6CE'];
+
+
+  return (
+    <div>
+      {/* Hero */}
+      <div style={{
+        height: 520, background: `${occ.color}15`,
+        position: 'relative', overflow: 'hidden',
+        display: 'flex', alignItems: 'flex-end'
+      }}>
+        <img src={PHOTOS.occasionHero[occasionId]} alt={occ.label}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(90deg, rgba(250, 250, 248, 0.92) 0%, rgba(250, 250, 248, 0.6) 50%, transparent 100%) 0% 0% / contain'
+        }} />
+
+        {/* Text overlay */}
+        <div style={{ position: 'relative', padding: '0 80px 64px', maxWidth: 720 }}>
+          <button onClick={() => onNavigate('occasions')}
+          style={{
+            background: 'transparent', border: 'none', cursor: 'pointer',
+            fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase',
+            color: occ.color, marginBottom: 20, padding: 0,
+            display: 'flex', alignItems: 'center', gap: 6
+          }}>
+            ← All Occasions
+          </button>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: occ.color, color: '#fff',
+            fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
+            padding: '5px 12px', borderRadius: 20, marginBottom: 16
+          }}>
+            <span>Date Approved™</span>
+          </div>
+          <h1 className="serif" style={{ fontSize: 68, fontWeight: 400, lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: 20 }}>
+            {occ.label}
+          </h1>
+          <p style={{ fontSize: 16, color: '#4A4A46', lineHeight: 1.6, maxWidth: 480 }}>{occ.sub}</p>
+        </div>
+
+
+      </div>
+
+      {/* Styling Tips */}
+      <div style={{ borderBottom: '1px solid #E8E8E3', background: '#fff' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 40px' }}>
+
+          {/* Tailgate intro paragraph */}
+          {tailgateExtra &&
+          <div style={{ marginBottom: 48, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
+              <div>
+                <p style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9B9B96', marginBottom: 10 }}>The situation</p>
+                <h2 className="serif" style={{ fontSize: 36, fontWeight: 400, lineHeight: 1.15, marginBottom: 20 }}>
+                  Six hours outside.<br />One outfit to nail it.
+                </h2>
+                <p style={{ fontSize: 15, color: '#4A4A46', lineHeight: 1.8 }}>{tailgateExtra.intro}</p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                {tailgateExtra.rules.map((r) =>
+              <div key={r.num} style={{ background: '#F5F4F0', padding: '20px', borderRadius: 4 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: occ.color, letterSpacing: '0.08em', display: 'block', marginBottom: 8 }}>{r.num}</span>
+                    <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 6, lineHeight: 1.3 }}>{r.title}</p>
+                    <p style={{ fontSize: 12, color: '#6B6B66', lineHeight: 1.6 }}>{r.body}</p>
+                  </div>
+              )}
+              </div>
+            </div>
+          }
+
+          <p style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9B9B96', marginBottom: 6 }}>
+            How to wear it
+          </p>
+          <h2 className="serif" style={{ fontSize: 30, fontWeight: 400, marginBottom: 36 }}>Styling notes</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E8E8E3' }}>
+            {tips.map((t, i) =>
+            <div key={i} style={{ background: '#FAFAF8', padding: '32px 36px' }}>
+                <div style={{
+                width: 28, height: 28, borderRadius: '50%',
+                background: `${occ.color}18`, border: `1px solid ${occ.color}30`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 12, color: occ.color, fontWeight: 600, marginBottom: 16
+              }}>{i + 1}</div>
+                <p className="serif" style={{ fontSize: 20, fontWeight: 400, marginBottom: 8, lineHeight: 1.3 }}>"{t.tip}"</p>
+                <p style={{ fontSize: 13, color: '#9B9B96', lineHeight: 1.5 }}>{t.sub}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Product Grid */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 40px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+          <div>
+            <p style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9B9B96', marginBottom: 6 }}>
+              Shop the occasion
+            </p>
+            <h2 className="serif" style={{ fontSize: 30, fontWeight: 400 }}>{occ.label} Edit</h2>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {['All', 'Women', 'Men'].map((g) =>
+            <button key={g} onClick={() => setGenderFilter(g)}
+            style={{
+              padding: '7px 18px', border: genderFilter === g ? '1.5px solid #1A1A18' : '1px solid #E8E8E3',
+              background: genderFilter === g ? '#1A1A18' : 'transparent',
+              color: genderFilter === g ? '#fff' : '#1A1A18',
+              fontSize: 11, letterSpacing: '0.07em', textTransform: 'uppercase',
+              cursor: 'pointer', borderRadius: 3, transition: 'all 0.15s'
+            }}>{g}</button>
+            )}
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+          {products.map((p, i) =>
+          <ProductCard key={i} product={p} tagKey={occasionId} onNavigate={onNavigate} occ={occ} index={i} />
+          )}
+        </div>
+      </div>
+
+      {/* UGC Photo Board */}
+      <div style={{ background: '#1A1A18', padding: '64px 0 80px' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 36 }}>
+            <div>
+              <p style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6B6B66', marginBottom: 6 }}>
+                Community
+              </p>
+              <h2 className="serif" style={{ fontSize: 36, fontWeight: 400, color: '#FAFAF8' }}>Styled by real people</h2>
+            </div>
+            <span style={{ fontSize: 12, color: '#6B6B66', letterSpacing: '0.06em' }}>{occ.label} · @abercrombie</span>
+          </div>
+
+          {/* Masonry grid */}
+          <div style={{ columns: '4 auto', gap: 10, marginBottom: 36 }}>
+            {(PHOTOS.ugc[occasionId] || PHOTOS.ugc.everyday).map((src, i) =>
+            <div key={i}
+            onMouseEnter={() => setHovPhoto(i)}
+            onMouseLeave={() => setHovPhoto(null)}
+            style={{
+              breakInside: 'avoid', marginBottom: 10,
+              position: 'relative', cursor: 'pointer', overflow: 'hidden'
+            }}>
+                <img src={src} alt="" style={{ width: '100%', display: 'block', objectFit: 'cover',
+                transform: hovPhoto === i ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.4s ease' }} />
+                {/* Hover reveal */}
+                <div style={{
+                position: 'absolute', inset: 0,
+                background: 'rgba(26,26,24,0.85)',
+                opacity: hovPhoto === i ? 1 : 0,
+                transition: 'opacity 0.25s',
+                display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                padding: 14
+              }}>
+                  <p style={{ fontSize: 11, color: '#FAFAF8', fontWeight: 500, marginBottom: 6 }}>@college_user_{i + 1}</p>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+                    <TagBadge tagKey={occasionId} size="sm" />
+                  </div>
+                  <button onClick={() => onNavigate('product')}
+                style={{
+                  background: occ.color, color: '#fff', border: 'none', cursor: 'pointer',
+                  fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase',
+                  padding: '6px 12px', borderRadius: 3, width: '100%'
+                }}>
+                    Shop this look →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* CTA */}
+          <div style={{
+            border: `1px solid ${occ.color}60`,
+            borderRadius: 8, padding: '32px 40px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            background: `${occ.color}10`
+          }}>
+            <div>
+              <h3 className="serif" style={{ fontSize: 28, fontWeight: 400, color: '#FAFAF8', marginBottom: 8 }}>
+                Share your look → Get featured
+              </h3>
+              <p style={{ fontSize: 14, color: '#9B9B96', lineHeight: 1.6, maxWidth: 500 }}>
+                Wearing A&F for {occ.label.toLowerCase()}? Tag @abercrombie and use <strong style={{ color: '#FAFAF8' }}>#DateApproved</strong> to be featured in this gallery.
+              </p>
+            </div>
+            <button style={{
+              background: occ.color, color: '#fff', border: 'none', cursor: 'pointer',
+              padding: '14px 28px', fontSize: 12, fontWeight: 500,
+              letterSpacing: '0.08em', textTransform: 'uppercase', borderRadius: 4,
+              whiteSpace: 'nowrap', flexShrink: 0
+            }}>Submit Your Look</button>
+          </div>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function ProductCard({ product, tagKey, onNavigate, occ, index }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+      <div style={{
+        aspectRatio: '3/4', position: 'relative',
+        overflow: 'hidden', cursor: 'pointer', marginBottom: 12
+      }} onClick={() => onNavigate('product')}>
+        <img src={(PHOTOS.cards[tagKey] || PHOTOS.cards.everyday)[index % 6]} alt={product.name}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+          transform: hov ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.45s ease' }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: hov ? 'rgba(0,0,0,0.06)' : 'transparent',
+          transition: 'background 0.2s'
+        }} />
+        <div style={{ position: 'absolute', top: 10, right: 10 }}>
+          <button style={{
+            width: 30, height: 30, borderRadius: '50%',
+            background: 'rgba(250,250,248,0.9)', border: 'none',
+            cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center'
+          }}>♡</button>
+        </div>
+        {product.was &&
+        <div style={{
+          position: 'absolute', bottom: 10, left: 10,
+          background: occ.color, color: '#fff',
+          fontSize: 9, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
+          padding: '3px 7px', borderRadius: 2
+        }}>SALE</div>
+        }
+      </div>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
+          <p style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.4, flex: 1, paddingRight: 8 }}>{product.name}</p>
+          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: product.was ? occ.color : '#1A1A18' }}>${product.price}</span>
+            {product.was && <span style={{ fontSize: 11, color: '#AAA', textDecoration: 'line-through', display: 'block' }}>${product.was}</span>}
+          </div>
+        </div>
+        <TagBadge tagKey={tagKey} size="sm" />
+      </div>
+    </div>);
+
+}
+
+// ─── App ─────────────────────────────────────────────────────────
+function App() {
+  const [view, setView] = useState(() => localStorage.getItem('da_view') || 'product');
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "defaultOccasion": "tailgate",
+    "accentColor": "#6B2737",
+    "showSaleBadge": true
+  } /*EDITMODE-END*/;
+  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+
+  const navigate = (v) => {
+    setView(v);
+    localStorage.setItem('da_view', v);
+    window.scrollTo({ top: 0 });
+  };
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const updateTweak = (key, val) => {
+    const next = { ...tweaks, [key]: val };
+    setTweaks(next);
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [key]: val } }, '*');
+  };
+
+  const occasionId = view.startsWith('occasion-') ? view.replace('occasion-', '') : tweaks.defaultOccasion;
+
+  return (
+    <div>
+      <Nav onNavigate={navigate} currentView={view} />
+      {view === 'product' && <ProductPage onNavigate={navigate} />}
+      {view === 'occasions' && <OccasionsGrid onNavigate={navigate} />}
+      {view.startsWith('occasion-') && <OccasionPage occasionId={occasionId} onNavigate={navigate} />}
+
+      {/* Tweaks panel */}
+      {tweaksOpen &&
+      <div style={{
+        position: 'fixed', bottom: 24, right: 24, zIndex: 999,
+        background: '#fff', border: '1px solid #E8E8E3', borderRadius: 12,
+        boxShadow: '0 8px 40px rgba(0,0,0,0.12)', padding: '20px 22px',
+        width: 260
+      }}>
+          <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 18, color: '#1A1A18' }}>
+            Tweaks
+          </p>
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontSize: 11, color: '#9B9B96', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Default Occasion</p>
+            {OCCASIONS.map((o) =>
+          <label key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', marginBottom: 6 }}>
+                <input type="radio" checked={tweaks.defaultOccasion === o.id} onChange={() => updateTweak('defaultOccasion', o.id)} />
+                <span style={{ fontSize: 13 }}>{o.label}</span>
+              </label>
+          )}
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontSize: 11, color: '#9B9B96', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Show Sale Badge</p>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+              <input type="checkbox" checked={tweaks.showSaleBadge} onChange={(e) => updateTweak('showSaleBadge', e.target.checked)} />
+              <span style={{ fontSize: 13 }}>Sale badge visible</span>
+            </label>
+          </div>
+          <div>
+            <p style={{ fontSize: 11, color: '#9B9B96', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>Navigate to</p>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {[
+            { label: 'Product', v: 'product' },
+            { label: 'All Occasions', v: 'occasions' },
+            { label: 'Date Night', v: 'occasion-datenight' },
+            { label: 'Tailgate', v: 'occasion-tailgate' }].
+            map(({ label, v }) =>
+            <button key={v} onClick={() => {navigate(v);}}
+            style={{
+              padding: '5px 10px', fontSize: 11, border: '1px solid #E8E8E3',
+              background: view === v ? '#1A1A18' : 'transparent',
+              color: view === v ? '#fff' : '#1A1A18',
+              borderRadius: 4, cursor: 'pointer'
+            }}>{label}</button>
+            )}
+            </div>
+          </div>
+        </div>
+      }
+    </div>);
+
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
